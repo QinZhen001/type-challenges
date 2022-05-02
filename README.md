@@ -1,2 +1,3 @@
 # type-challenges
-:honeybee: ts练习
+[https://github.com/type-challenges/type-challenges](https://github.com/type-challenges/type-challenges) 
+
