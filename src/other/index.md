@@ -30,3 +30,27 @@ type LazyPerson = {
 }
 ```
 
+
+
+
+
+## object
+
+[interface object couldn't extends Record](https://stackoverflow.com/questions/64621451/interface-object-couldnt-extends-recordstring-unknown)
+
+```tsx
+type R = Record<string, any>;
+// type R = object  (这样做不好 没办法增加新的属性)
+
+let obj: R = {
+  ccc: "asdad",
+  ddd: ["hi"],
+};
+obj.ddd = "ddd";
+obj.cccc = [1, 32, 54];
+```
+
+
+
+
+
