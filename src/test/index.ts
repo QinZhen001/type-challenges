@@ -20,14 +20,34 @@ type something = "abc" | "bcd" | "cde" | "def";
 
 // type ddd = DeepReadonly<aaa>;
 
-
 // type Mapish = { [k: string]: boolean };
 // type M = keyof Mapish;
 
+// const obj = {one: 1, two: 2}
+// type dd  = typeof obj
+// type Prop = {
+//   [k in keyof typeof obj]?: string;
+// }
 
+class A {
+  constructor() {
+    console.log("constructor aaaa");
+  }
 
-const obj = {one: 1, two: 2}
-type dd  = typeof obj
-type Prop = {
-  [k in keyof typeof obj]?: string;
+  aaa() {
+    console.log("aaa");
+  }
 }
+
+class B extends A {
+  constructor() {
+    console.log("constructor bbb");
+    super();
+  }
+
+  aaa() {
+    console.log("bbb");
+  }
+}
+
+let b = new B();
