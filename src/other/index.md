@@ -1,3 +1,7 @@
+# 正文
+
+
+
 ## key-remapping-via-as
 
 [https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as)
@@ -48,6 +52,87 @@ let obj: R = {
 };
 obj.ddd = "ddd";
 obj.cccc = [1, 32, 54];
+```
+
+
+
+
+
+
+
+## Indexed Access Types
+
+[https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html)
+
+```tsx
+type Person = { age: number; name: string; alive: boolean };
+type Age = Person["age"];
+```
+
+
+
+```tsx
+type I1 = Person["age" | "name"];
+// type I1 = string | number
+ 
+type I2 = Person[keyof Person];   
+// type I2 = string | number | boolean
+ 
+type AliveOrName = "alive" | "name";
+type I3 = Person[AliveOrName]; 
+// type I3 = string | boolean
+```
+
+
+
+```tsx
+const MyArray = [
+  { name: "Alice", age: 15 },
+  { name: "Bob", age: 23 },
+  { name: "Eve", age: 38 },
+];
+ 
+// [number] 针对的是一个const变量
+type Person = typeof MyArray[number];
+// type Person = {
+//   name: string;
+//   age: number;
+// }
+```
+
+
+
+## Distributive Conditional Types
+
+When conditional types act on a generic type, they become *distributive* when given a union type. For example, take the following:
+
+```ts
+type ToArray<Type> = Type extends any ? Type[] : never;
+type StrArrOrNumArr = ToArray<string | number>;
+// type StrArrOrNumArr = string[] | number[]
+```
+
+Typically, distributivity is the desired behavior. To avoid that behavior, you can surround each side of the `extends` keyword with square brackets.
+
+```tsx
+type ToArrayNonDist<Type> = [Type] extends [any] ? Type[] : never;
+// 'StrArrOrNumArr' is no longer a union.
+type StrArrOrNumArr = ToArrayNonDist<string | number>;      
+// type StrArrOrNumArr = (string | number)[]
+```
+
+
+
+
+
+
+
+# 感悟
+
+模板：利用extends 和 infer
+
+```tsx
+type XXX<S> = S extends `${xxx}${infer U}` ? Other : AnOther;
 ```
 
 
