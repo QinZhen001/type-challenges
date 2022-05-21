@@ -1,8 +1,9 @@
-// const Arr = [1, 2, 3]
+type Module = {
+  click?: () => void
+}
 
-// Arr[0] = 10 //OK
-// Arr.push(12) // OK
-// Arr.pop() //Ok
+let module: Module = {}
 
-// //But
-// Arr = [4, 5, 6] // ERROR
+module?.click()
+
+module?.click?.()

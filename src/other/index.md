@@ -105,8 +105,27 @@ type StrArrOrNumArr = ToArrayNonDist<string | number>
 
 # 感悟
 
-模板：利用 extends 和 infer
+
+
+##  extends 和 infer
+
+利用 extends 和 infer
 
 ```tsx
 type XXX<S> = S extends `${xxx}${infer U}` ? Other : AnOther
 ```
+
+
+
+
+
+## 增加泛型
+
+```tsx
+type LengthOfString<S extends string> = any
+
+// 单纯只有S我们很难去搞的时候 可以考虑增加多一个泛型
+type LengthOfString<S extends string,A extends any[] = []>   
+// 同时设置了默认值  
+```
+
