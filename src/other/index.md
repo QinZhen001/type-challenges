@@ -1,3 +1,5 @@
+# 正文
+
 ## key-remapping-via-as
 
 [https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as)
@@ -6,7 +8,7 @@ In TypeScript 4.1 and onwards, you can re-map keys in mapped types with an `as` 
 
 ```tsx
 type MappedTypeWithNewProperties<Type> = {
-    [Properties in keyof Type as NewKeyType]: Type[Properties]
+  [Properties in keyof Type as NewKeyType]: Type[Properties]
 }
 ```
 
@@ -22,7 +24,7 @@ interface Person {
 }
 
 type LazyPerson = Getters<Person>;
-         
+
 type LazyPerson = {
     getName: () => string;
     getAge: () => number;
@@ -30,61 +32,81 @@ type LazyPerson = {
 }
 ```
 
-
-
-
-
 ## object
 
 [interface object couldn't extends Record](https://stackoverflow.com/questions/64621451/interface-object-couldnt-extends-recordstring-unknown)
 
 ```tsx
-type R = Record<string, any>;
+type R = Record<string, any>
 // type R = object  (这样做不好 没办法增加新的属性)
 
 let obj: R = {
-  ccc: "asdad",
-  ddd: ["hi"],
-};
-obj.ddd = "ddd";
-obj.cccc = [1, 32, 54];
+  ccc: 'asdad',
+  ddd: ['hi'],
+}
+obj.ddd = 'ddd'
+obj.cccc = [1, 32, 54]
 ```
 
+## Indexed Access Types
 
-
-
-
-## Awaited
-
-[The Awaited Type and Promise Improvements](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html)
-
-TypeScript 4.5 introduces a new utility type called the `Awaited` type. This type is meant to model operations like `await` in `async` functions, or the `.then()` method on `Promise`s - specifically, the way that they recursively unwrap `Promise`s.
+[https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html)
 
 ```tsx
-// A = string
-type A = Awaited<Promise<string>>;
-// B = number
-type B = Awaited<Promise<Promise<number>>>;
-// C = boolean | number
-type C = Awaited<boolean | Promise<number>>;
+type Person = { age: number; name: string; alive: boolean }
+type Age = Person['age']
 ```
-
-实现
 
 ```tsx
-/**
- * Recursively unwraps the "awaited type" of a type. Non-promise "thenables" should resolve to `never`. This emulates the behavior of `await`.
- */
-type Awaited<T> =
-    T extends null | undefined ? T : // special case for `null | undefined` when not in `--strictNullChecks` mode
-        T extends object & { then(onfulfilled: infer F): any } ? // `await` only unwraps object types with a callable `then`. Non-object types are not unwrapped
-            F extends ((value: infer V, ...args: any) => any) ? // if the argument to `then` is callable, extracts the first argument
-                Awaited<V> : // recursively unwrap the value
-                never : // the argument to `then` was not callable
-        T; // non-object or non-thenable
+type I1 = Person['age' | 'name']
+// type I1 = string | number
+
+type I2 = Person[keyof Person]
+// type I2 = string | number | boolean
+
+type AliveOrName = 'alive' | 'name'
+type I3 = Person[AliveOrName]
+// type I3 = string | boolean
 ```
 
+```tsx
+const MyArray = [
+  { name: 'Alice', age: 15 },
+  { name: 'Bob', age: 23 },
+  { name: 'Eve', age: 38 },
+]
 
+// [number] 针对的是一个const变量
+type Person = typeof MyArray[number]
+// type Person = {
+//   name: string;
+//   age: number;
+// }
+```
 
+## Distributive Conditional Types
 
+When conditional types act on a generic type, they become _distributive_ when given a union type. For example, take the following:
 
+```ts
+type ToArray<Type> = Type extends any ? Type[] : never
+type StrArrOrNumArr = ToArray<string | number>
+// type StrArrOrNumArr = string[] | number[]
+```
+
+Typically, distributivity is the desired behavior. To avoid that behavior, you can surround each side of the `extends` keyword with square brackets.
+
+```tsx
+type ToArrayNonDist<Type> = [Type] extends [any] ? Type[] : never
+// 'StrArrOrNumArr' is no longer a union.
+type StrArrOrNumArr = ToArrayNonDist<string | number>
+// type StrArrOrNumArr = (string | number)[]
+```
+
+# 感悟
+
+模板：利用 extends 和 infer
+
+```tsx
+type XXX<S> = S extends `${xxx}${infer U}` ? Other : AnOther
+```
