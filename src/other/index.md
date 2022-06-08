@@ -103,17 +103,44 @@ type StrArrOrNumArr = ToArrayNonDist<string | number>
 // type StrArrOrNumArr = (string | number)[]
 ```
 
+
+
+## 字母大小写
+
+[https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
+
+* Uppercase 大写
+* Lowercase 小写
+* Capitalize 首字母大写
+* Uncapitalize 首字母小写
+
+
+
 # 感悟
 
 
 
-##  extends 和 infer
-
-利用 extends 和 infer
+## 遍历type
 
 ```tsx
-type XXX<S> = S extends `${xxx}${infer U}` ? Other : AnOther
+type Keys<F> = {
+  [key in keyof F]: F[key]
+}
 ```
+
+使用：
+
+```tsx
+type Foo = {
+  a: number
+  b: string
+}
+type result = Keys<Foo>
+```
+
+
+
+
 
 
 
@@ -128,4 +155,34 @@ type LengthOfString<S extends string> = any
 type LengthOfString<S extends string,A extends any[] = []>   
 // 同时设置了默认值  
 ```
+
+
+
+
+
+## 拆分 string
+
+我们可以利用infer 来实现拆分string
+
+```tsx
+type xxx<T extends string> = T extends `${infer First}${infer Rest}`
+  ? First | xxx<Rest>
+  : never;
+```
+
+
+
+## 合并对象
+
+```tsx
+type Merge<F, S> = Omit<Omit<F, keyof S> & S, never>
+```
+
+**tip:  & 交叉类型出现相同字段会变成 never** 只要在交叉之前通过 Omit 去掉就行
+
+```tsx
+Omit<T,never>  // 重新整合成一个对象  
+```
+
+
 

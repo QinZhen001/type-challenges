@@ -1,9 +1,17 @@
-type Module = {
-  click?: () => void
+enum A {
+  FOO = 0,
+  BAR = 1,
+  BAZ = 2,
 }
 
-let module: Module = {}
+// Error
+type B = {
+  length: number
+  [aaa in A]: number
+  [key: string]: number
+}
 
-module?.click()
-
-module?.click?.()
+type Person = {
+  age: number
+  // [k: string]: string | number
+}
