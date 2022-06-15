@@ -186,3 +186,10 @@ Omit<T,never>  // 重新整合成一个对象
 
 
 
+## & 和 |
+
+```tsx
+type Diff<O, O1> = keyof (O & O1); // 并集 （合成一整个）
+type Diff<O, O1> = keyof (O | O1); // 交集  (既属于也属于)
+```
+
