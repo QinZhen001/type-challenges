@@ -142,7 +142,24 @@ type result = Keys<Foo>
 
 
 
+## 数组类型也是索引类型
 
+```tsx
+type Mutable<Obj> = {
+  -readonly [Key in keyof Obj]: Obj[Key]
+}
+
+type T = Mutable<{
+  readonly a: 1,
+  readonly b: 2
+}>
+
+type Aa = Mutable<readonly [1, 2, 3]>
+```
+
+索引类型是聚合多个元素的类型，所以对象、数组、class 都是。
+
+（准确来说叫元组，元组是元素个数固定的数组）
 
 
 
