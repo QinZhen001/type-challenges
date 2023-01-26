@@ -210,3 +210,83 @@ type Diff<O, O1> = keyof (O & O1); // 并集 （合成一整个）
 type Diff<O, O1> = keyof (O | O1); // 交集  (既属于也属于)
 ```
 
+
+
+
+
+
+
+## 控制联合类型的分布方式
+
+假设我们有一个`ToArray`辅助类型，如果输入的类型不是数组，则返回一个数组类型。
+
+```tsx
+type ToArray<T> = T extends Array<unknown> ? T: T[];
+type Foo = ToArray<string|number>;
+
+// string[] | number[]。但这是有歧义的。为什么不是(string | number)[] 呢？
+```
+
+默认情况下，当typescript遇到一个联合类型（这里是`string | number`）的通用参数（这里是`T`）时，它会分配到每个组成元素，这就是为什么这里会得到`string[] | number[]`。这种行为可以通过使用特殊的语法和用一对`[]`来包装`T`来改变，比如。
+
+```tsx
+type ToArray<T> = [T] extends [Array<unknown>] ? T : T[];
+type Foo = ToArray<string | number>;
+
+// 现在，Foo 被推断为类型(string | number)[]
+```
+
+
+
+
+
+
+
+## 函数的返回类型
+
+```tsx
+type User = {
+    age: number;
+    gender: string;
+    country: string;
+    city: string
+};
+type Demographic = Pick<User, 'age'|'gender'>;
+type Geo = Pick<User, 'country'|'city'>;
+```
+
+不是重复函数的返回类型
+
+```tsx
+function createCircle() {
+    return {
+        kind: 'circle' as const,
+        radius: 1.0
+    }
+}
+
+function transformCircle(circle: { kind: 'circle'; radius: number }) {
+    ...
+}
+
+transformCircle(createCircle());
+
+```
+
+而是使用`ReturnType<T>`来提取它：
+
+```tsx
+function createCircle() {
+    return {
+        kind: 'circle' as const,
+        radius: 1.0
+    }
+}
+
+function transformCircle(circle: ReturnType<typeof createCircle>) {
+    ...
+}
+
+transformCircle(createCircle());
+
+```
