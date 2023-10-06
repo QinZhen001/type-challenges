@@ -20,8 +20,6 @@ type Mutable<Obj> = {
 // 函数重载
 function zip(target: unknown[], source: unknown[]): unknown[]
 function zip<Target extends readonly unknown[], Source extends readonly unknown[]>(target: Target, source: Source): Zip<Mutable<Target>, Mutable<Source>>
-
-
 function zip(target: unknown[], source: unknown[]) {
   if (!target.length || !source.length) {
     return []
